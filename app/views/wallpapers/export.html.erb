@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= @wallpaper[:title] %></title>
+    <style><%= File.read(Rails.root.join("app/assets/stylesheets/app.css")) %></style>
+  </head>
+  <body class="export-body">
+    <%= render partial: "wallpapers/sheet", locals: { wallpaper: @wallpaper, preview_html: @preview_html } %>
+  </body>
+</html>

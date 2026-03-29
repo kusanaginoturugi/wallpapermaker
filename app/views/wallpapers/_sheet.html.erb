@@ -1,0 +1,28 @@
+<article
+  class="wallpaper-sheet"
+  data-theme="<%= wallpaper[:theme] %>"
+  data-density="<%= wallpaper[:density] %>"
+  data-canvas-size="<%= wallpaper[:canvas_size] %>"
+  style="--sheet-width:<%= wallpaper[:width] %>px; --sheet-height:<%= wallpaper[:height] %>px; --sheet-columns:<%= wallpaper[:columns] %>;"
+>
+  <header class="sheet-header">
+    <div>
+      <p class="sheet-kicker">TECHNICAL NOTES</p>
+      <h1><%= wallpaper[:title] %></h1>
+    </div>
+    <dl class="sheet-meta">
+      <div>
+        <dt>Size</dt>
+        <dd><%= wallpaper[:canvas_size] %></dd>
+      </div>
+      <div>
+        <dt>Mode</dt>
+        <dd><%= wallpaper[:theme] %> / <%= wallpaper[:density] %></dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="sheet-content">
+    <%= preview_html %>
+  </section>
+</article>

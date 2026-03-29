@@ -1,0 +1,76 @@
+<% content_for :title, "Wallpapermaker" %>
+
+<main class="workspace-shell">
+  <section class="workspace-panel workspace-controls">
+    <header class="workspace-header">
+      <p class="eyebrow">Markdown Wallpaper</p>
+      <h1>技術メモ壁紙ジェネレータ</h1>
+      <p class="workspace-copy">Markdown から段組のPC壁紙を作ります。まずはプレビューを整えてから PNG を書き出します。</p>
+    </header>
+
+    <% if flash.now[:alert].present? %>
+      <div class="form-alert"><%= flash.now[:alert] %></div>
+    <% end %>
+
+    <%= form_with url: preview_wallpaper_path, method: :post, local: true, class: "wallpaper-form" do %>
+      <div class="form-grid">
+        <label>
+          <span>Title</span>
+          <%= text_field_tag :title, @wallpaper[:title] %>
+        </label>
+
+        <label>
+          <span>Canvas Size</span>
+          <%= select_tag :canvas_size, options_for_select(WallpaperOptions::SIZE_PRESETS.map { |key, preset| ["#{key} (#{preset[:label]})", key] }, @wallpaper[:canvas_size]) %>
+        </label>
+
+        <label>
+          <span>Columns</span>
+          <%= select_tag :columns, options_for_select((1..4).map { |value| [value, value] }, @wallpaper[:columns]) %>
+        </label>
+
+        <label>
+          <span>Theme</span>
+          <%= select_tag :theme, options_for_select([["Light", "light"], ["Dark", "dark"]], @wallpaper[:theme]) %>
+        </label>
+
+        <label>
+          <span>Density</span>
+          <%= select_tag :density, options_for_select([["Normal", "normal"], ["Dense", "dense"]], @wallpaper[:density]) %>
+        </label>
+      </div>
+
+      <label class="markdown-input">
+        <span>Markdown</span>
+        <%= text_area_tag :markdown, @wallpaper[:markdown], rows: 24 %>
+      </label>
+
+      <div class="form-actions">
+        <%= submit_tag "プレビュー更新", class: "button button-primary" %>
+      </div>
+    <% end %>
+
+    <%= form_with url: export_wallpaper_path, method: :post, local: true, class: "export-form" do %>
+      <% @wallpaper.each do |key, value| %>
+        <%= hidden_field_tag key, value %>
+      <% end %>
+      <%= submit_tag "PNG出力", class: "button" %>
+    <% end %>
+  </section>
+
+  <section class="workspace-panel workspace-preview-panel">
+    <header class="workspace-preview-header">
+      <div>
+        <h2>Preview</h2>
+        <p><%= @wallpaper[:canvas_size] %> / <%= @wallpaper[:columns] %> columns / <%= @wallpaper[:theme] %></p>
+      </div>
+      <div class="preview-badge <%= "preview-badge-warning" if @wallpaper[:markdown].length > 2400 %>">
+        <%= @wallpaper[:markdown].length > 2400 ? "内容が多めです" : "1画面向け" %>
+      </div>
+    </header>
+
+    <div class="preview-frame">
+      <%= render partial: "wallpapers/sheet", locals: { wallpaper: @wallpaper, preview_html: @preview_html } %>
+    </div>
+  </section>
+</main>
