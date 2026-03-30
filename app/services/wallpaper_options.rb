@@ -79,6 +79,6 @@ module WallpaperOptions
   end
 
   def normalized_target_locale(target_locale)
-    TRANSLATION_TARGET_LOCALES.key?(target_locale) ? target_locale : "en"
+    TRANSLATION_TARGET_LOCALES.key?(target_locale) ? target_locale : "ja"
   end
 end
