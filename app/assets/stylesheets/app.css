@@ -130,6 +130,12 @@ textarea {
   margin-top: 18px;
 }
 
+.form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .button {
   border: 1px solid rgba(27, 43, 70, 0.16);
   border-radius: 999px;
@@ -154,6 +160,15 @@ textarea {
   background: rgba(220, 38, 38, 0.1);
   border: 1px solid rgba(220, 38, 38, 0.18);
   color: #991b1b;
+}
+
+.form-notice {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  color: #166534;
 }
 
 .workspace-preview-panel {

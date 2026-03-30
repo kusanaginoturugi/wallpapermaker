@@ -8,6 +8,10 @@
       <p class="workspace-copy">Markdown から段組のPC壁紙を作ります。まずはプレビューを整えてから PNG を書き出します。</p>
     </header>
 
+    <% if flash.now[:notice].present? %>
+      <div class="form-notice"><%= flash.now[:notice] %></div>
+    <% end %>
+
     <% if flash.now[:alert].present? %>
       <div class="form-alert"><%= flash.now[:alert] %></div>
     <% end %>
@@ -38,6 +42,11 @@
           <span>Density</span>
           <%= select_tag :density, options_for_select([["Normal", "normal"], ["Dense", "dense"]], @wallpaper[:density]) %>
         </label>
+
+        <label>
+          <span>Translate To</span>
+          <%= select_tag :target_locale, options_for_select(WallpaperOptions::TRANSLATION_TARGET_LOCALES.map { |key, label| [label, key] }, @wallpaper[:target_locale]) %>
+        </label>
       </div>
 
       <label class="markdown-input">
@@ -45,8 +54,12 @@
         <%= text_area_tag :markdown, @wallpaper[:markdown], rows: 24 %>
       </label>
 
+      <%= hidden_field_tag :source_markdown, @wallpaper[:source_markdown] %>
+
       <div class="form-actions">
-        <%= submit_tag "プレビュー更新", class: "button button-primary" %>
+        <%= submit_tag "プレビュー更新", name: :wallpaper_action, value: "preview", class: "button button-primary" %>
+        <%= button_tag "翻訳してプレビュー", type: :submit, name: :wallpaper_action, value: "translate", class: "button" %>
+        <%= button_tag "保存", type: :submit, name: :wallpaper_action, value: "save", class: "button" %>
       </div>
     <% end %>
 

@@ -10,6 +10,6 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root "wallpapers#new"
-  post "/", to: "wallpapers#new", as: :preview_wallpaper
+  post "wallpaper/preview", to: "wallpapers#preview", as: :preview_wallpaper
   post "wallpaper/export", to: "wallpapers#export", as: :export_wallpaper
 end

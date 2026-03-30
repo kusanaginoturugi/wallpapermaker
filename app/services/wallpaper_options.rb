@@ -8,6 +8,10 @@ module WallpaperOptions
   THEMES = %w[light dark].freeze
   DENSITIES = %w[normal dense].freeze
   COLUMN_RANGE = (1..4)
+  TRANSLATION_TARGET_LOCALES = {
+    "en" => "English",
+    "ja" => "日本語"
+  }.freeze
 
   SAMPLE_MARKDOWN = <<~MARKDOWN.freeze
     # Rails Cheat Sheet
@@ -55,12 +59,14 @@ module WallpaperOptions
     {
       title: raw_params["title"].presence || "Markdown Cheat Sheet",
       markdown: raw_params["markdown"].presence || SAMPLE_MARKDOWN,
+      source_markdown: raw_params["source_markdown"].presence,
       canvas_size: size_key || "1920x1080",
       width: preset[:width],
       height: preset[:height],
       columns: COLUMN_RANGE.cover?(columns) ? columns : default_columns_for(size_key || "1920x1080"),
       theme: THEMES.include?(raw_params["theme"]) ? raw_params["theme"] : "light",
-      density: DENSITIES.include?(raw_params["density"]) ? raw_params["density"] : "normal"
+      density: DENSITIES.include?(raw_params["density"]) ? raw_params["density"] : "normal",
+      target_locale: normalized_target_locale(raw_params["target_locale"])
     }
   end
 
@@ -70,5 +76,9 @@ module WallpaperOptions
     when "2560x1440" then 3
     else 2
     end
+  end
+
+  def normalized_target_locale(target_locale)
+    TRANSLATION_TARGET_LOCALES.key?(target_locale) ? target_locale : "en"
   end
 end
