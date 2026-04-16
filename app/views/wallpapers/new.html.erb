@@ -8,13 +8,17 @@
       <p class="workspace-copy">Markdown から段組のPC壁紙を作ります。まずはプレビューを整えてから PNG を書き出します。</p>
     </header>
 
-    <% if flash.now[:notice].present? %>
-      <div class="form-notice"><%= flash.now[:notice] %></div>
+    <% if flash.now[:notice].present? || flash[:notice].present? %>
+      <div class="form-notice"><%= flash.now[:notice] || flash[:notice] %></div>
     <% end %>
 
-    <% if flash.now[:alert].present? %>
-      <div class="form-alert"><%= flash.now[:alert] %></div>
+    <% if flash.now[:alert].present? || flash[:alert].present? %>
+      <div class="form-alert"><%= flash.now[:alert] || flash[:alert] %></div>
     <% end %>
+
+    <div class="editor-mode-badge">
+      <%= @wallpaper[:wallpaper_template_id].present? ? "保存済みを編集中" : "新規作成" %>
+    </div>
 
     <%= form_with url: preview_wallpaper_path, method: :post, local: true, class: "wallpaper-form" do %>
       <div class="form-grid">
@@ -55,11 +59,13 @@
       </label>
 
       <%= hidden_field_tag :source_markdown, @wallpaper[:source_markdown] %>
+      <%= hidden_field_tag :wallpaper_template_id, @wallpaper[:wallpaper_template_id] %>
 
       <div class="form-actions">
         <%= submit_tag "プレビュー更新", name: :wallpaper_action, value: "preview", class: "button button-primary" %>
         <%= button_tag "翻訳してプレビュー", type: :submit, name: :wallpaper_action, value: "translate", class: "button" %>
-        <%= button_tag "保存", type: :submit, name: :wallpaper_action, value: "save", class: "button" %>
+        <%= button_tag(@wallpaper[:wallpaper_template_id].present? ? "上書き保存" : "保存", type: :submit, name: :wallpaper_action, value: "save", class: "button") %>
+        <%= button_tag "複製して保存", type: :submit, name: :wallpaper_action, value: "duplicate_save", class: "button" %>
       </div>
     <% end %>
 
@@ -69,6 +75,37 @@
       <% end %>
       <%= submit_tag "PNG出力", class: "button" %>
     <% end %>
+
+    <section class="saved-wallpapers">
+      <header class="saved-wallpapers-header">
+        <div>
+          <p class="eyebrow">Saved Wallpapers</p>
+          <h2>保存済み一覧</h2>
+        </div>
+        <%= link_to "新規に戻す", root_path, class: "button button-quiet" %>
+      </header>
+
+      <% if @saved_wallpapers.any? %>
+        <div class="saved-wallpaper-list">
+          <% @saved_wallpapers.each do |template| %>
+            <article class="saved-wallpaper-item <%= "saved-wallpaper-item-active" if @wallpaper[:wallpaper_template_id].to_i == template.id %>">
+              <div class="saved-wallpaper-copy">
+                <h3><%= template.title %></h3>
+                <p><%= [template.canvas_size, "#{template.columns} columns", template.theme].join(" / ") %></p>
+                <p><%= l template.updated_at, format: :short %></p>
+              </div>
+              <div class="saved-wallpaper-actions">
+                <%= link_to "開く", root_path(template_id: template.id), class: "button button-quiet" %>
+                <%= link_to "複製", root_path(template_id: template.id, duplicate: 1), class: "button button-quiet" %>
+                <%= button_to "削除", wallpaper_template_path(template), method: :delete, class: "button button-danger", form: { data: { turbo_confirm: "削除しますか？" } } %>
+              </div>
+            </article>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="saved-wallpapers-empty">まだ保存済みデータはありません。</p>
+      <% end %>
+    </section>
   </section>
 
   <section class="workspace-panel workspace-preview-panel">

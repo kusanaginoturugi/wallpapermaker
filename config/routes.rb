@@ -12,4 +12,5 @@ Rails.application.routes.draw do
   root "wallpapers#new"
   post "wallpaper/preview", to: "wallpapers#preview", as: :preview_wallpaper
   post "wallpaper/export", to: "wallpapers#export", as: :export_wallpaper
+  resources :wallpaper_templates, only: :destroy
 end

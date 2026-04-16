@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
   create_table "wallpaper_templates", force: :cascade do |t|
     t.string "canvas_size", null: false
     t.integer "columns", null: false
     t.datetime "created_at", null: false
     t.string "density", null: false
     t.text "markdown", null: false
+    t.text "source_markdown"
+    t.string "target_locale"
     t.string "theme", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
