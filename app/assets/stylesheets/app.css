@@ -689,6 +689,29 @@ textarea {
   border-radius: 0;
 }
 
+.export-body .sheet-content p,
+.export-body .sheet-content li {
+  line-height: calc(var(--sheet-body-line) - 0.04);
+}
+
+.export-body .sheet-content table {
+  font-size: calc(var(--sheet-table-size) - 0.02rem);
+  line-height: calc(var(--sheet-table-line) - 0.04);
+}
+
+.export-body .sheet-content thead th {
+  font-size: calc(var(--sheet-table-header-size) - 0.02rem);
+}
+
+.export-body .sheet-content th,
+.export-body .sheet-content td {
+  padding: calc(var(--sheet-table-cell-y) - 1px) calc(var(--sheet-table-cell-x) - 1px);
+}
+
+.export-body .sheet-code {
+  padding: calc(var(--sheet-code-padding-y) - 1px) calc(var(--sheet-code-padding-x) - 1px);
+}
+
 @media (max-width: 1180px) {
   body {
     padding: 18px;
