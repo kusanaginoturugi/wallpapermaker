@@ -1,4 +1,6 @@
 class WallpapersController < ApplicationController
+  class WallpaperInputError < StandardError; end
+
   def new
     @wallpaper = selected_wallpaper
     render_editor
@@ -8,13 +10,14 @@ class WallpapersController < ApplicationController
     @wallpaper = normalized_wallpaper_params
     response_status = process_wallpaper_action
     render_editor status: response_status
-  rescue WallpaperTranslator::TranslationError, ActiveRecord::RecordInvalid => e
+  rescue WallpaperTranslator::TranslationError, WallpaperInputError, ActiveRecord::RecordInvalid => e
     flash.now[:alert] = e.message
     render_editor status: :unprocessable_entity
   end
 
   def export
     wallpaper = normalized_wallpaper_params
+    validate_markdown_limits!(wallpaper)
     exporter = WallpaperExporter.new(wallpaper)
     png = exporter.export
 
@@ -22,7 +25,7 @@ class WallpapersController < ApplicationController
       filename: exporter.filename,
       type: "image/png",
       disposition: :attachment
-  rescue WallpaperExporter::ExportError => e
+  rescue WallpaperExporter::ExportError, WallpaperInputError => e
     flash.now[:alert] = e.message
     @wallpaper = wallpaper
     render_editor status: :unprocessable_entity
@@ -60,6 +63,8 @@ class WallpapersController < ApplicationController
   end
 
   def process_wallpaper_action
+    validate_markdown_limits!(@wallpaper)
+
     case params[:wallpaper_action]
     when "translate"
       @wallpaper[:source_markdown] = @wallpaper[:markdown]
@@ -95,5 +100,17 @@ class WallpapersController < ApplicationController
 
   def template_params(wallpaper)
     wallpaper.slice(:title, :markdown, :source_markdown, :canvas_size, :columns, :theme, :density, :target_locale)
+  end
+
+  def validate_markdown_limits!(wallpaper)
+    markdown = wallpaper[:markdown].to_s
+
+    if markdown.blank?
+      raise WallpaperInputError, "Markdown が空です"
+    end
+
+    if markdown.length > WallpaperOptions::MAX_MARKDOWN_CHARS
+      raise WallpaperInputError, "Markdown が長すぎます。#{WallpaperOptions::MAX_MARKDOWN_CHARS}文字以内にしてください"
+    end
   end
 end

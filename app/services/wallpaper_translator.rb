@@ -19,6 +19,9 @@ class WallpaperTranslator
 
   def translate
     raise TranslationError, "Markdown が空です" if markdown.blank?
+    if markdown.length > WallpaperOptions::MAX_TRANSLATION_CHARS
+      raise TranslationError, "翻訳対象が長すぎます。#{WallpaperOptions::MAX_TRANSLATION_CHARS}文字以内にしてください"
+    end
     raise TranslationError, "OPENAI_API_KEY が未設定です" if ENV["OPENAI_API_KEY"].blank?
 
     response = client.responses.create(

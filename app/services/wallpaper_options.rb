@@ -8,6 +8,8 @@ module WallpaperOptions
   THEMES = %w[light dark].freeze
   DENSITIES = %w[normal dense].freeze
   COLUMN_RANGE = (1..4)
+  MAX_MARKDOWN_CHARS = 12_000
+  MAX_TRANSLATION_CHARS = 6_000
   TRANSLATION_TARGET_LOCALES = {
     "en" => "English",
     "ja" => "日本語"

@@ -55,7 +55,11 @@
 
       <label class="markdown-input">
         <span>Markdown</span>
-        <%= text_area_tag :markdown, @wallpaper[:markdown], rows: 24 %>
+        <%= text_area_tag :markdown, @wallpaper[:markdown], rows: 24, maxlength: WallpaperOptions::MAX_MARKDOWN_CHARS %>
+        <small class="input-hint">
+          最大 <%= WallpaperOptions::MAX_MARKDOWN_CHARS %> 文字。
+          翻訳は <%= WallpaperOptions::MAX_TRANSLATION_CHARS %> 文字以内。
+        </small>
       </label>
 
       <%= hidden_field_tag :source_markdown, @wallpaper[:source_markdown] %>
